@@ -20,5 +20,12 @@
   },
   "homepage": "https://github.com/serjio1905/interview_task#readme",
   "dependencies": {
+    "@emotion/react": "^11.10.8",
+    "@emotion/styled": "^11.10.8",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.12.2",
+    "@reduxjs/toolkit": "^1.9.5",
+    "dayjs": "^1.11.7",
+    "react-redux": "^8.0.5"
   }
 }

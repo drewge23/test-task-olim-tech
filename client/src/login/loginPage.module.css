@@ -1,0 +1,13 @@
+.loginPage {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10rem;
+}
+
+.loginPage label {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
