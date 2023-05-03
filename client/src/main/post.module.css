@@ -1,0 +1,53 @@
+.posts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px 0;
+}
+
+.post {
+    width: 400px;
+    margin-right: 15px;
+}
+
+.post h3 {
+    text-align: center;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.author, .timestamp {
+    font-size: 0.75rem;
+}
+
+.like, .dislike, .edit {
+    padding: 5px 10px 10px 10px;
+    border: 0 solid white;
+}
+.like:hover {
+    background-color: #c6f879;
+}
+.dislike:hover {
+    background-color: #f8a579;
+}
+.rating {
+    margin: 0 15px;
+    font-size: 1.25rem;
+}
+.commentsBtn {
+    width: 100%;
+    margin: 5px 0;
+}
+
+.comment {
+    border: 1px solid gray;
+    padding: 0 5px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+.comment p {
+    margin: 10px 5px;
+}

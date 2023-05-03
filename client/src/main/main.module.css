@@ -8,3 +8,20 @@
     border-bottom: 2px solid black;
     padding: 0 2rem;
 }
+
+.paginator {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.paginator button {
+    padding: 10px 15px;
+}
+
+.paginator span {
+    font-size: 1.25rem;
+    font-weight: 500;
+}

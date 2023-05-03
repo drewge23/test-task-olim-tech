@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {MAIN_URL} from "../utils/constants";
 import {useSelector} from "react-redux";
+import s from './modal.module.css'
 
 function NewCommentModal({postId}) {
     const username = useSelector(state => state.user.name)
@@ -21,8 +22,7 @@ function NewCommentModal({postId}) {
     }
 
     return (
-        <div>
-            <label htmlFor="text">Text: </label>
+        <div className={s.commentModal}>
             <input name='text' type="text"
                    value={text}
                    onChange={(e) => setText(e.target.value)}

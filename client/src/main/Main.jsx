@@ -5,8 +5,9 @@ import Paginator from "./Paginator";
 import Post from "./Post";
 import NewPostModal from "./NewPostModal";
 import {useDispatch, useSelector} from "react-redux";
-import {filterPostsByKeyword, getPostsByPageNumber} from "../redux/postsSlice";
+import {filterPostsByKeyword, getPostsByPageNumber, setCurrentPostInfo, setEditMode} from "../redux/postsSlice";
 import s from './main.module.css'
+import {current} from "@reduxjs/toolkit";
 
 function Main(props) {
     const dispatch = useDispatch()
@@ -14,7 +15,7 @@ function Main(props) {
     const posts = useSelector(state => state.posts.posts)
     const loading = useSelector(state => state.posts.loading)
 
-    const [pageNumber, setPageNumber] = useState(1)
+    const pageNumber = useSelector(state => state.posts.pageNumber)
     useEffect(() => {
         dispatch(getPostsByPageNumber(pageNumber))
     }, [pageNumber])
@@ -27,24 +28,26 @@ function Main(props) {
             dispatch(getPostsByPageNumber(pageNumber))
         }
     }
-    const debounce = (func, delay) => {
-        let timeoutId
-        return function (...args) {
-            if (timeoutId) {
-                clearTimeout(timeoutId)
-            }
-            timeoutId = setTimeout(() => {
-                func.apply(null, args)
-            }, delay)
-        }
-    }
-    const debouncedFilter = debounce(filterByKeyword, 500)
+    // const debounce = (func, delay) => {
+    //     let timeoutId
+    //     return function (...args) {
+    //         if (timeoutId) {
+    //             clearTimeout(timeoutId)
+    //         }
+    //         timeoutId = setTimeout(() => {
+    //             func.apply(null, args)
+    //         }, delay)
+    //     }
+    // }
+    // const debouncedFilter = debounce(filterByKeyword, 500)
 
     const [newPostOpened, setNewPostOpened] = useState(false)
-    const [postInfo, setPostInfo] = useState({title: '', imageSrc: null})
     const openModal = () => {
+        dispatch(setCurrentPostInfo({title: '', imageSrc: null}))
+        dispatch(setEditMode(false))
         setNewPostOpened(true)
     }
+
     return (
         <div>
             <Header/>
@@ -53,9 +56,7 @@ function Main(props) {
                     Create a new post
                 </button>
                 {newPostOpened && <NewPostModal username={username}
-                                                postInfo={postInfo}
-                                                setNewPostOpened={setNewPostOpened}
-                                                pageNumber={pageNumber}/>}
+                                                setNewPostOpened={setNewPostOpened}/>}
                 <div>
                     <label htmlFor="search">Search: </label>
                     <input type="text"
@@ -64,7 +65,10 @@ function Main(props) {
                            value={keyword}
                            onChange={(e) => {
                                setKeyword(e.target.value)
-                               debouncedFilter()
+                               // debouncedFilter()
+                           }}
+                           onKeyUp={(e) => {
+                               if (e.key === 'Enter') filterByKeyword()
                            }}
                     />
                 </div>
@@ -74,17 +78,13 @@ function Main(props) {
                         {posts && [...posts]
                             .sort((a, b) => b.date - a.date)
                             .map((post) => <Post key={post.id}
-                                                            {...post}
-                                                            currentUserName={username}
-                                                            setNewPostOpened={setNewPostOpened}
-                                                            pageNumber={pageNumber}
-                                                            setPostInfo={setPostInfo}
-                        />)}
+                                                 {...post}
+                                                 currentUserName={username}
+                                                 setNewPostOpened={setNewPostOpened}
+                                                 pageNumber={pageNumber}
+                            />)}
                     </PostsLayout>}
-                <Paginator pageNumber={pageNumber}
-                           setPageNumber={setPageNumber}
-                           setNewPostOpened={setNewPostOpened}
-                           setPostInfo={setPostInfo}
+                <Paginator setNewPostOpened={setNewPostOpened}
                 />
             </div>
         </div>

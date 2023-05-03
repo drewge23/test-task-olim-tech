@@ -52,3 +52,10 @@ label:hover {
 img {
     max-width: 50px;
 }
+
+.commentModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}

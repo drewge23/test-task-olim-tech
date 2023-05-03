@@ -1,52 +1,46 @@
 import React, {useState} from 'react';
-import {MAIN_URL} from "../utils/constants";
-import {getPostsByPageNumber} from "../redux/postsSlice";
-import {useDispatch} from "react-redux";
+import {createPost, updatePost} from "../redux/postsSlice";
+import {useDispatch, useSelector} from "react-redux";
 import s from './modal.module.css'
 import UPLOAD from '../assets/upload.png'
 
-function NewPostModal({username, postInfo, pageNumber, setNewPostOpened}) {
+function NewPostModal({username, setNewPostOpened}) {
+    const currentPostInfo = useSelector(state => state.posts.currentPostInfo)
+    const editMode = useSelector(state => state.posts.editMode)
     const dispatch = useDispatch()
-    const [title, setTitle] = useState(postInfo.title)
+    const [title, setTitle] = useState(currentPostInfo.title)
     const [file, setFile] = useState(null)
 
+    const pageNumber = useSelector(state => state.posts.pageNumber)
+
     const createNewPost = () => {
-        fetch(MAIN_URL + `post/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title,
-                username,
-            })
-        })
-            .then(res => res.json())
-            .then(json => {
-                setTitle('')
-                if (!file) return
-                const formData = new FormData()
-                formData.append("picture", file)
-                fetch(MAIN_URL + `post/${json.result.id}/picture`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        file: formData
-                    })
-                })
-                    .then(res => {
-                        dispatch(getPostsByPageNumber(pageNumber))
-                    })
-            })
+        if (!title.trim()) {
+            alert('Post should have a title')
+            return
+        }
+        dispatch(createPost({title, username, file}))
+        setTitle('')
+        setNewPostOpened(false)
+    }
+    const updateNewPost = () => {
+        if (!title.trim()) {
+            alert('Post should have a title')
+            return
+        }
+        dispatch(updatePost({title, username, file, postId: currentPostInfo.id}))
+        setTitle('')
+        setNewPostOpened(false)
+    }
+
+    const handleClose = () => {
+        setNewPostOpened(false)
+        setTitle('')
     }
 
     return (
         <div className={s.overlay}>
             <div className={s.modal}>
-                <button onClick={() => setNewPostOpened(false)}
-                        className={s.close}>
+                <button onClick={handleClose} className={s.close}>
                     ❌
                 </button>
                 <label htmlFor="title">Title: </label>
@@ -54,17 +48,25 @@ function NewPostModal({username, postInfo, pageNumber, setNewPostOpened}) {
                        value={title}
                        onChange={(e) => setTitle(e.target.value)}
                 />
-                <label htmlFor="picture">
-                    Upload a picture
-                    <img src={UPLOAD} alt="Upload"/>
-                </label>
+                {!file
+                    ? <label htmlFor="picture">
+                        Upload a picture
+                        <img src={UPLOAD} alt="Upload"/>
+                    </label>
+                    : <button> {file.name} X </button>}
                 <input type="file"
                        id='picture'
                        name='picture'
                        style={{display: "none"}}
                        onChange={(e) => setFile(e.target.files[0])}
                 />
-                <button onClick={createNewPost}>Submit</button>
+                <button onClick={() => {
+                    !editMode
+                        ? createNewPost()
+                        : updateNewPost()
+                }}>
+                    Submit
+                </button>
             </div>
         </div>
     );
