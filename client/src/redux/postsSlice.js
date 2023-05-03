@@ -42,6 +42,7 @@ export const createPost = createAsyncThunk('posts/createPost', async ({title, us
     return json.result
 })
 export const updatePost = createAsyncThunk('posts/updatePost', async ({title, likes, dislikes, postId}, {dispatch}) => {
+    console.log(title, likes, dislikes, postId)
     const response = await fetch(MAIN_URL + `post/${postId}`, {
         method: 'PUT',
         headers: {
@@ -54,6 +55,8 @@ export const updatePost = createAsyncThunk('posts/updatePost', async ({title, li
         })
     })
     const json = await response.json()
+    console.log(response)
+    console.log(json)
     return json.result
 })
 
@@ -72,6 +75,7 @@ const postsSlice = createSlice({
         pageNumber: 1,
         totalPages: 1,
         currentPostInfo: {
+            id: 0,
             title: '',
             imageSrc: null,
         },

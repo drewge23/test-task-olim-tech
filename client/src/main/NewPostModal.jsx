@@ -27,7 +27,7 @@ function NewPostModal({username, setNewPostOpened}) {
             alert('Post should have a title')
             return
         }
-        dispatch(updatePost({title, username, file, postId: currentPostInfo.id}))
+        dispatch(updatePost({title, postId: currentPostInfo.id}))
         setTitle('')
         setNewPostOpened(false)
     }

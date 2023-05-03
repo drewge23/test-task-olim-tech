@@ -26,7 +26,7 @@ function Post(props) {
     }
 
     const handleEdit = () => {
-        dispatch(setCurrentPostInfo({title: props.title, imageSrc: null}))
+        dispatch(setCurrentPostInfo({id: props.id, title: props.title, imageSrc: null}))
         dispatch(setEditMode(true))
         props.setNewPostOpened(true)
     }
