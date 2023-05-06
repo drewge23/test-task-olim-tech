@@ -32,20 +32,34 @@ function Post(props) {
     }
 
     const like = () => {
+        const index = props.likes.findIndex(author => author === props.currentUserName)
+        const tempLikes = [...props.likes]
+        tempLikes.splice(index, 1)
+        dispatch(updatePost({postId: props.id, likes: tempLikes}))
+    }
+    const dislike = () => {
+        const index = props.dislikes.findIndex(author => author === props.currentUserName)
+        const tempDislikes = [...props.dislikes]
+        tempDislikes.splice(index, 1)
+        dispatch(updatePost({postId: props.id, dislikes: tempDislikes}))
+    }
+    const handleLike = () => {
         if (props.likes.includes(props.currentUserName)) {
-            const index = props.likes.findIndex((el) => el.username === props.currentUserName)
-            const tempLikes = [...props.likes].splice(index, 1)
-            dispatch(updatePost({postId: props.id, likes: tempLikes}))
+            like()
         } else {
+            if (props.dislikes.includes(props.currentUserName)) {
+                dislike()
+            }
             dispatch(updatePost({postId: props.id, likes: [...props.likes, props.currentUserName]}))
         }
     }
-    const dislike = () => {
+    const handleDislike = () => {
         if (props.dislikes.includes(props.currentUserName)) {
-            const index = props.dislikes.indexOf(props.currentUserName)
-            const tempLikes = [...props.dislikes].splice(index, 1)
-            dispatch(updatePost({postId: props.id, dislikes: tempLikes}))
+            dislike()
         } else {
+            if (props.likes.includes(props.currentUserName)) {
+                like()
+            }
             dispatch(updatePost({postId: props.id, dislikes: [...props.dislikes, props.currentUserName]}))
         }
     }
@@ -58,9 +72,9 @@ function Post(props) {
                 <span className={s.author}>by {props.username}</span>
                 <span className={s.timestamp}>{dayjs(new Date(+props.date)).fromNow()}</span>
             </div>
-            <button className={s.like} onClick={like}>👍</button>
+            <button className={s.like} onClick={handleLike}>👍</button>
             <span className={s.rating}>{props.likes.length - props.dislikes.length}</span>
-            <button className={s.dislike} onClick={dislike}>👎</button>
+            <button className={s.dislike} onClick={handleDislike}>👎</button>
             {isMine && <button
                 onClick={handleEdit}
                 className={s.edit}>
@@ -83,13 +97,13 @@ function Post(props) {
                 className={s.commentsBtn}>
                 Add a new comment
             </button>}
-            {commentsOpened && props.comments.map(comment => (
+            {commentsOpened && props.comments && props.comments.map(comment => (
                 <Comment key={comment.id}
                          {...comment}
                          currentUserName={props.currentUserName}
                 />
             ))}
-            {newCommentOpened && <NewCommentModal postId={props.id}/>}
+            {newCommentOpened && commentsOpened && <NewCommentModal postId={props.id}/>}
         </div>
     );
 }

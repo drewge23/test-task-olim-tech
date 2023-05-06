@@ -4,7 +4,7 @@ import {MAIN_URL} from "../utils/constants";
 export const getPostsByPageNumber = createAsyncThunk('posts/getPosts', async (pageNumber) => {
     const response = await fetch(MAIN_URL + `post/page/${pageNumber}`);
     const data = await response.json();
-    return data.result;
+    return data;
 })
 export const filterPostsByKeyword = createAsyncThunk('posts/filterPostsByKeyword', async (keyword) => {
     const response = await fetch(MAIN_URL + `post/search/${keyword}`)
@@ -27,22 +27,19 @@ export const createPost = createAsyncThunk('posts/createPost', async ({title, us
     if (!file) return json.result
     const formData = new FormData()
     formData.append("picture", file)
-    const boundary = '--' + nanoid(16) + '--'
+    const boundary = nanoid()
     const imgResponse = await fetch(MAIN_URL + `post/${json.result.id}/picture`, {
         method: 'POST',
         headers: {
             'Content-Type': `multipart/form-data; boundary=${boundary}`
         },
-        body: JSON.stringify({
-            file: formData
-        })
+        body: { file: formData }
     })
     const imgJson = await imgResponse.json()
     console.log(imgJson)
     return json.result
 })
 export const updatePost = createAsyncThunk('posts/updatePost', async ({title, likes, dislikes, postId}, {dispatch}) => {
-    console.log(title, likes, dislikes, postId)
     const response = await fetch(MAIN_URL + `post/${postId}`, {
         method: 'PUT',
         headers: {
@@ -55,8 +52,6 @@ export const updatePost = createAsyncThunk('posts/updatePost', async ({title, li
         })
     })
     const json = await response.json()
-    console.log(response)
-    console.log(json)
     return json.result
 })
 
@@ -109,7 +104,8 @@ const postsSlice = createSlice({
             state.loading = 'pending'
         })
         builder.addCase(getPostsByPageNumber.fulfilled, (state, action) => {
-            state.posts = action.payload
+            state.posts = action.payload.result
+            state.totalPages = action.payload.totalPages
             state.loading = 'idle'
         })
         builder.addCase(getPostsByPageNumber.rejected, (state, action) => {

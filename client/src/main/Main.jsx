@@ -7,7 +7,6 @@ import NewPostModal from "./NewPostModal";
 import {useDispatch, useSelector} from "react-redux";
 import {filterPostsByKeyword, getPostsByPageNumber, setCurrentPostInfo, setEditMode} from "../redux/postsSlice";
 import s from './main.module.css'
-import {current} from "@reduxjs/toolkit";
 
 function Main(props) {
     const dispatch = useDispatch()

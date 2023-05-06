@@ -6,6 +6,7 @@ import {setCurrentPostInfo, setPageNumber} from "../redux/postsSlice";
 function Paginator({setNewPostOpened}) {
     const dispatch = useDispatch()
     const pageNumber = useSelector(state => state.posts.pageNumber)
+    const totalPages = useSelector(state => state.posts.totalPages)
     const decrement = () => {
         if (pageNumber <= 1) return
         dispatch(setPageNumber(pageNumber - 1))
@@ -13,7 +14,7 @@ function Paginator({setNewPostOpened}) {
         dispatch(setCurrentPostInfo({title: '', imageScr: null}))
     }
     const increment = () => {
-        // if (pageNumber < totalPages) setPageNumber(pageNumber + 1)
+        if (pageNumber >= totalPages) return
         dispatch(setPageNumber(pageNumber + 1))
         setNewPostOpened(false)
         dispatch(setCurrentPostInfo({title: '', imageScr: null}))
