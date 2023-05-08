@@ -160,7 +160,8 @@ const postsSlice = createSlice({
             console.log(action.payload)
             const index = state.posts.findIndex(post => post.id === action.payload.id)
             const postArr = [...state.posts]
-            postArr[index] = action.payload
+            const comments = postArr[index].comments
+            postArr[index] = {...action.payload, comments}
             state.posts = postArr
         })
 

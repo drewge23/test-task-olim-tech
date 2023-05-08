@@ -89,7 +89,7 @@ function Post(props) {
                 </button>
             </div>
             {commentsOpened && <button
-                onClick={() => setNewCommentOpened(true)}
+                onClick={() => setNewCommentOpened(!newCommentOpened)}
                 className={s.commentsBtn}>
                 Add a new comment
             </button>}
