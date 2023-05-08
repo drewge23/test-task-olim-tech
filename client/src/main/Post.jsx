@@ -61,7 +61,9 @@ function Post(props) {
     return (
         <div className={s.post}>
             <h3>{props.title}</h3>
-            <img src={props.imageSrc} alt={''}/>
+            <div className={s.imageContainer}>
+                <img src={props.imageSrc} alt={''} className={s.image}/>
+            </div>
             <div className={s.footer}>
                 <span className={s.author}>by {props.username}</span>
                 <span className={s.timestamp}>{dayjs(new Date(+props.date)).fromNow()}</span>

@@ -48,12 +48,14 @@ function NewPostModal({username, setNewPostOpened}) {
                        value={title}
                        onChange={(e) => setTitle(e.target.value)}
                 />
-                {!file
+                {!editMode && (!file
                     ? <label htmlFor="picture">
                         Upload a picture
-                        <img src={UPLOAD} alt="Upload"/>
+                        <img src={UPLOAD} alt="Upload" className={s.uploadImage}/>
                     </label>
-                    : <button> {file.name} X </button>}
+                    : <button> {file.name} X </button>
+                )
+                }
                 <input type="file"
                        id='picture'
                        name='picture'

@@ -27,18 +27,12 @@ export const createPost = createAsyncThunk('posts/createPost', async ({title, us
     if (!file) return json.result
     const formData = new FormData()
     formData.append("picture", file)
-    const boundary = nanoid()
     const imgResponse = await fetch(MAIN_URL + `post/${json.result.id}/picture`, {
         method: 'POST',
-        headers: {
-            'Content-Type': `multipart/form-data; boundary=--${boundary}`
-        },
         body: formData
     })
-    console.log(imgResponse)
     const imgJson = await imgResponse.json()
-    console.log(imgJson)
-    return json.result
+    return imgJson.result
 })
 export const updatePost = createAsyncThunk('posts/updatePost', async ({title, likes, dislikes, postId}, {dispatch}) => {
     const response = await fetch(MAIN_URL + `post/${postId}`, {
@@ -159,6 +153,7 @@ const postsSlice = createSlice({
         })
 
         builder.addCase(createPost.fulfilled, (state, action) => {
+            console.log(action.payload)
             state.posts = [...state.posts, action.payload]
         })
         builder.addCase(updatePost.fulfilled, (state, action) => {

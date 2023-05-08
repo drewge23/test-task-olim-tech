@@ -27,16 +27,20 @@
     padding: 5px 10px 10px 10px;
     border: 0 solid white;
 }
+
 .like:hover {
     background-color: #c6f879;
 }
+
 .dislike:hover {
     background-color: #f8a579;
 }
+
 .rating {
     margin: 0 15px;
     font-size: 1.25rem;
 }
+
 .commentsBtn {
     width: 100%;
     margin: 5px 0;
@@ -48,6 +52,18 @@
     margin: 5px 0;
     border-radius: 5px;
 }
+
 .comment p {
     margin: 10px 5px;
+}
+
+.imageContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.image {
+    max-width: 400px;
+    border-radius: 15px;
 }
