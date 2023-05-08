@@ -31,10 +31,11 @@ export const createPost = createAsyncThunk('posts/createPost', async ({title, us
     const imgResponse = await fetch(MAIN_URL + `post/${json.result.id}/picture`, {
         method: 'POST',
         headers: {
-            'Content-Type': `multipart/form-data; boundary=${boundary}`
+            'Content-Type': `multipart/form-data; boundary=--${boundary}`
         },
-        body: { file: formData }
+        body: formData
     })
+    console.log(imgResponse)
     const imgJson = await imgResponse.json()
     console.log(imgJson)
     return json.result
@@ -62,7 +63,6 @@ export const deletePostById = createAsyncThunk('posts/deletePostById', async (po
     return data.result
 })
 export const createCommentByPostId = createAsyncThunk('posts/createCommentByPostId', async ({postId, text, username}) => {
-    console.log(postId, text, username)
     const response = await fetch(MAIN_URL + `comment/`, {
         method: 'POST',
         headers: {
@@ -75,19 +75,22 @@ export const createCommentByPostId = createAsyncThunk('posts/createCommentByPost
         })
     })
     const data = await response.json()
-    console.log(data.result)
     return data.result
 })
 export const updateCommentById = createAsyncThunk('posts/updateCommentById', async ({commentId, text, likes, dislikes}) => {
     const response = await fetch(MAIN_URL + `comment/${commentId}`, {
         method: 'PUT',
-        body: {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
             text,
             likes,
             dislikes,
-        }
+        })
     })
     const updatedComment = await response.json()
+    console.log(updatedComment)
     return updatedComment.result
 })
 export const deleteCommentById = createAsyncThunk('posts/deleteCommentById', async (commentId) => {
@@ -97,7 +100,6 @@ export const deleteCommentById = createAsyncThunk('posts/deleteCommentById', asy
     const deletedComment = await response.json()
     return deletedComment.result
 })
-
 
 const postsSlice = createSlice({
     name: 'posts',
@@ -160,6 +162,7 @@ const postsSlice = createSlice({
             state.posts = [...state.posts, action.payload]
         })
         builder.addCase(updatePost.fulfilled, (state, action) => {
+            console.log(action.payload)
             const index = state.posts.findIndex(post => post.id === action.payload.id)
             const postArr = [...state.posts]
             postArr[index] = action.payload
@@ -183,7 +186,7 @@ const postsSlice = createSlice({
         builder.addCase(updateCommentById.fulfilled, (state, action) => {
             const postIndex = state.posts.findIndex(post => post.id === action.payload.postId)
             const postArr = [...state.posts]
-            const commentIndex = postArr.findIndex(comment => comment.id === action.payload.id)
+            const commentIndex = postArr[postIndex].comments.findIndex(comment => comment.id === action.payload.id)
             postArr[postIndex].comments[commentIndex] = action.payload
             state.posts = postArr
         })
