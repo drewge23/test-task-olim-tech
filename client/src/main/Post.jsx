@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import Comment from "./Comment";
 import NewCommentModal from "./NewCommentModal";
-import {MAIN_URL} from "../utils/constants";
-import {getPostsByPageNumber, setCurrentPostInfo, setEditMode, updatePost} from "../redux/postsSlice";
+import {deletePostById, setCurrentPostInfo, setEditMode, updatePost} from "../redux/postsSlice";
 import {useDispatch} from "react-redux";
 import dayjs from "dayjs";
 import s from './post.module.css'
@@ -13,16 +12,11 @@ dayjs.extend(relativeTime)
 function Post(props) {
     const dispatch = useDispatch()
     const isMine = props.currentUserName === props.username
-    const [loading, setLoading] = useState(false)
     const [commentsOpened, setCommentsOpened] = useState(false)
     const [newCommentOpened, setNewCommentOpened] = useState(false)
 
     const deletePost = () => {
-        fetch(MAIN_URL + `post/${props.id}`, {
-            method: 'DELETE',
-        })
-            .then(dispatch(getPostsByPageNumber(props.pageNumber)))
-            .catch(err => console.log(err))
+        dispatch(deletePostById(props.id))
     }
 
     const handleEdit = () => {

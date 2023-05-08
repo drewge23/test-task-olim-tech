@@ -1,1 +1,1 @@
-[{"id":1,"title":"post 1","username":"a1","likes":["a1","a2","a3","sad","a4"],"dislikes":[],"date":"1683376517273"},{"id":2,"title":"post 2","username":"a3","likes":["a3","sad"],"dislikes":[],"date":"1683377277657","comments":[]}]
+[{"id":1,"title":"post 1","username":"a1","likes":["a1","a2","a3","sad","a4"],"dislikes":[],"date":"1683376517273","comments":[]},{"id":2,"title":"post 2","username":"a3","likes":["a3","sad"],"dislikes":[],"date":"1683377277657","comments":[{"id":8,"text":"asdaf","postId":2,"username":"a4","likes":[],"dislikes":[],"date":"1683377510479"}]}]

@@ -1,24 +1,20 @@
 import React, {useState} from 'react';
-import {MAIN_URL} from "../utils/constants";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import s from './modal.module.css'
+import {createCommentByPostId} from "../redux/postsSlice";
 
 function NewCommentModal({postId}) {
+    const dispatch = useDispatch()
     const username = useSelector(state => state.user.name)
     const [text, setText] = useState('')
+
     const createNewComment = () => {
-        fetch(MAIN_URL + `comment/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                text,
-                postId,
-                username,
-            })
-        })
-            .then(res => setText(''))
+        if (!text) {
+            alert('Comment cannot be an empty string!')
+            return
+        }
+        dispatch(createCommentByPostId({postId, text, username}))
+        setText('')
     }
 
     return (

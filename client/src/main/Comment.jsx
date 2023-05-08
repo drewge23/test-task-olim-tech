@@ -2,8 +2,7 @@ import React from 'react';
 import s from './post.module.css'
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime'
-import {MAIN_URL} from "../utils/constants";
-import {getPostsByPageNumber} from "../redux/postsSlice";
+import {deleteCommentById} from "../redux/postsSlice";
 import {useDispatch, useSelector} from "react-redux";
 
 dayjs.extend(relativeTime)
@@ -14,11 +13,8 @@ function Comment(props) {
     const pageNumber = useSelector(state => state.posts.pageNumber)
 
     const deleteComment = () => {
-        fetch(MAIN_URL + `comment/${props.id}`, {
-            method: 'DELETE',
-        })
-            .then(dispatch(getPostsByPageNumber(pageNumber)))
-            .catch(err => console.log(err))
+        console.log(props.id)
+        dispatch(deleteCommentById(props.id))
     }
 
     return (

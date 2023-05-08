@@ -54,14 +54,50 @@ export const updatePost = createAsyncThunk('posts/updatePost', async ({title, li
     const json = await response.json()
     return json.result
 })
+export const deletePostById = createAsyncThunk('posts/deletePostById', async (postId) => {
+    const response = await fetch(MAIN_URL + `post/${postId}`, {
+        method: 'DELETE',
+    })
+    const data = await response.json()
+    return data.result
+})
+export const createCommentByPostId = createAsyncThunk('posts/createCommentByPostId', async ({postId, text, username}) => {
+    console.log(postId, text, username)
+    const response = await fetch(MAIN_URL + `comment/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            postId,
+            text,
+            username,
+        })
+    })
+    const data = await response.json()
+    console.log(data.result)
+    return data.result
+})
+export const updateCommentById = createAsyncThunk('posts/updateCommentById', async ({commentId, text, likes, dislikes}) => {
+    const response = await fetch(MAIN_URL + `comment/${commentId}`, {
+        method: 'PUT',
+        body: {
+            text,
+            likes,
+            dislikes,
+        }
+    })
+    const updatedComment = await response.json()
+    return updatedComment.result
+})
+export const deleteCommentById = createAsyncThunk('posts/deleteCommentById', async (commentId) => {
+    const response = await fetch(MAIN_URL + `comment/${commentId}`, {
+        method: 'DELETE',
+    })
+    const deletedComment = await response.json()
+    return deletedComment.result
+})
 
-// export const deletePostById = createAsyncThunk('posts/filterPostsByKeyword', async (postId) => {
-//     const response = await fetch(MAIN_URL + `post/${postId}`, {
-//         method: 'DELETE',
-//     })
-//     const data = await response.json()
-//     return data.result
-// })
 
 const postsSlice = createSlice({
     name: 'posts',
@@ -124,13 +160,42 @@ const postsSlice = createSlice({
             state.posts = [...state.posts, action.payload]
         })
         builder.addCase(updatePost.fulfilled, (state, action) => {
-            const index = state.posts.findIndex(el => el.id === action.payload.id)
-            const newArr = [...state.posts]
-            newArr[index] = action.payload
-            state.posts = newArr
+            const index = state.posts.findIndex(post => post.id === action.payload.id)
+            const postArr = [...state.posts]
+            postArr[index] = action.payload
+            state.posts = postArr
+        })
+
+        builder.addCase(deletePostById.fulfilled, (state, action) => {
+            const index = state.posts.findIndex(post => post.id === action.payload.id)
+            const postArr = [...state.posts]
+            postArr.splice(index, 1)
+            state.posts = postArr
+        })
+
+        builder.addCase(createCommentByPostId.fulfilled, (state, action) => {
+            const index = state.posts.findIndex(post => post.id === action.payload.postId)
+            const postArr = [...state.posts]
+            postArr[index].comments.push(action.payload)
+            state.posts = postArr
+        })
+
+        builder.addCase(updateCommentById.fulfilled, (state, action) => {
+            const postIndex = state.posts.findIndex(post => post.id === action.payload.postId)
+            const postArr = [...state.posts]
+            const commentIndex = postArr.findIndex(comment => comment.id === action.payload.id)
+            postArr[postIndex].comments[commentIndex] = action.payload
+            state.posts = postArr
+        })
+
+        builder.addCase(deleteCommentById.fulfilled, (state, action) => {
+            const postIndex = state.posts.findIndex(post => post.id === action.payload.postId)
+            const postArr = [...state.posts]
+            const commentIndex = postArr.findIndex(comment => comment.id === action.payload.id)
+            postArr[postIndex].comments.splice(commentIndex, 1)
+            state.posts = postArr
         })
     }
-
 })
 
 export default postsSlice.reducer
